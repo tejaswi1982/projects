@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python3"]
+
+[phases.install]
+cmds = []
+
+[phases.build]
+cmds = ["echo static-dist"]

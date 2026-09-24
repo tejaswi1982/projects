@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "echo static-dist"
+
+[deploy]
+startCommand = "python -m http.server $PORT --directory dist"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
