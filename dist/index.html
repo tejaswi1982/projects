@@ -8,8 +8,49 @@
   <link rel="canonical" href="https://projects.abhinandantejaswi.com/">
   <meta property="og:title" content="Projects | Abhinandan Tejaswi"><meta property="og:description" content="A Mumbai walk. Three things noticed along the way."><meta property="og:type" content="website"><meta property="og:url" content="https://projects.abhinandantejaswi.com/"><meta property="og:image" content="https://projects.abhinandantejaswi.com/assets/projects-og.png"><meta property="og:image:alt" content="An illustrated sunlit Mumbai residential street.">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./walk.css">
-  <script type="module" src="./walk.js"></script>
+  <style>
+    /* Critical startup styles keep the first paint independent of network assets. */
+    html{background:#eeeadd}
+    html.v2-booting body{margin:0;height:100svh;overflow:hidden;background:#c7cebf;color:#222922}
+    .v2-booting #reading,.v2-booting #world,.v2-booting #walk-controls{visibility:hidden}
+    .v2-booting .panel{display:none!important}
+    .v2-booting .sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+    .v2-booting .navigation{position:fixed;z-index:30;inset:0 0 auto;display:flex;justify-content:space-between;align-items:flex-start;padding:24px 32px;font:11px/1.5 Consolas,'Courier New',monospace;letter-spacing:.06em}
+    .v2-booting .navigation *{box-sizing:border-box}
+    .v2-booting .navigation a,.v2-booting summary{color:inherit;min-height:44px;display:inline-flex;align-items:center;text-underline-offset:5px}
+    .v2-booting .identity{text-decoration:none;background:#eeeadd;padding:7px 10px}
+    .v2-booting .utilities{display:flex;align-items:flex-start;gap:12px;background:#eeeadd;padding:0 8px}
+    .v2-booting .utilities button{border:0;padding:10px;font:inherit;min-height:44px;background:#eeeadd;color:inherit}
+    .v2-booting #pause[hidden]{display:block!important;visibility:hidden}
+    .v2-booting summary{padding:8px;list-style:none;cursor:pointer}
+    .v2-booting summary::-webkit-details-marker{display:none}
+    .v2-booting details nav{position:absolute;right:32px;top:75px;background:#eeeadd;border:1px solid #222922;padding:16px;min-width:230px}
+    .v2-booting details nav a{display:flex;border-bottom:1px solid #c4c1b6;text-decoration:none;padding:6px}
+    .v2-booting .skip{position:fixed;left:20px;top:-100px;z-index:100;background:#eeeadd;color:#222922;padding:12px}
+    .v2-booting .skip:focus{top:12px}
+    .v2-booting :focus-visible{outline:3px solid #095b8a;outline-offset:5px}
+    @media(max-width:800px){.v2-booting .navigation{padding:14px 12px}.v2-booting .identity{font-size:9px}.v2-booting .utilities{gap:4px;font-size:10px}.v2-booting .utilities button{padding:10px 6px}.v2-booting details nav{right:12px;top:65px}}
+  </style>
+  <script>
+    (()=>{
+      const html=document.documentElement;html.classList.add('v2-booting');
+      let phase='pending',stylesLoaded;
+      const styles=new Promise(resolve=>stylesLoaded=resolve);
+      const fallback=()=>{if(phase==='fallback')return;phase='fallback';clearTimeout(deadline);location.replace(new URL('./read/',location.href));};
+      const deadline=setTimeout(fallback,9000);
+      window.v2Startup={get pending(){return phase==='pending';},styles,stylesLoaded,fallback,finish(){if(phase!=='pending')return;phase='ready';clearTimeout(deadline);html.classList.remove('v2-booting');}};
+      try{
+        if(matchMedia('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData||(navigator.deviceMemory&&navigator.deviceMemory<=2))return fallback();
+        const probe=document.createElement('canvas'),gl=probe.getContext('webgl2');
+        if(!gl)return fallback();
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+      }catch(error){fallback();}
+    })();
+  </script>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./walk.css" media="print" onload="this.media='all';window.v2Startup.stylesLoaded()" onerror="window.v2Startup.fallback()">
+  <noscript><link rel="stylesheet" href="./walk.css"></noscript>
+  <script type="module" src="./walk.js" onerror="window.v2Startup.fallback()"></script>
 </head>
 <body>
   <a class="skip" href="./read/">Read the linear Mumbai walk</a>

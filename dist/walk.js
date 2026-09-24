@@ -4,7 +4,7 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let world,state='ARRIVAL',distance=0,yaw=0,pitch=-.32,targetPitch=pitch,targetYaw=0,time=0,previous=0,paused=false,moving=0,pointer=null,raf=0,active=true;
 let slowFrames=0,frames=0,qualityLowered=false,alive=true,holdTimer,pressedAt=0;
 const transition={ARRIVAL:['WALK_TREE'],WALK_TREE:['LOOK_UP_AVAILABLE'],LOOK_UP_AVAILABLE:['TREE_NOTICED'],TREE_NOTICED:['TREE_SCORE'],TREE_SCORE:['WALK_CIVIC'],WALK_CIVIC:['CIVIC'],CIVIC:['KNOW_YOUR_MP'],KNOW_YOUR_MP:['WALK_ATTENTION'],WALK_ATTENTION:['ATTENTION_NOTICED'],ATTENTION_NOTICED:['PAY_ATTENTION'],PAY_ATTENTION:['WALK_END'],WALK_END:['END'],END:[]};
-function readVersion(reason){if(!alive)return;alive=false;cancelAnimationFrame(raf);location.replace(new URL($('.skip').getAttribute('href'),location.href));}
+function readVersion(reason){if(!alive)return;alive=false;cancelAnimationFrame(raf);window.v2Startup.fallback();}
 function announce(message){$('#status').textContent=message;}
 function panel(id){panels.forEach(p=>p.hidden=p.id!==id);if(id){const p=$('#'+id);p.scrollTop=0;p.focus({preventScroll:true});}$('#walk-controls').hidden=Boolean(id);}
 function controls(thought,label,walking=false){$('#thought').textContent=thought;const old=$('#action'),button=old.cloneNode(false);button.hidden=!label;button.textContent=label||'';let pressed=false;button.addEventListener('pointerdown',()=>pressed=true);button.onclick=e=>{if(e.detail===0||pressed)action();pressed=false;};old.replaceWith(button);$('#advance').hidden=!walking;$('#back').hidden=!walking;$('#hint').textContent=walking?'Hold Walk ↑ · Drag to look':state==='LOOK_UP_AVAILABLE'?'Drag upward to look into the canopy':'';}
@@ -30,13 +30,10 @@ function canWalk(){return ['WALK_TREE','WALK_CIVIC','WALK_ATTENTION','WALK_END']
 function advance(amount){if(!canWalk())return;const limits=state==='WALK_TREE'?[0,7]:state==='WALK_CIVIC'?[7,22]:state==='WALK_ATTENTION'?[22,25]:[25,28];distance=Math.min(limits[1],Math.max(limits[0],distance+amount));if(distance>=limits[1])enter(state==='WALK_TREE'?'LOOK_UP_AVAILABLE':state==='WALK_CIVIC'?'CIVIC':state==='WALK_ATTENTION'?'ATTENTION_NOTICED':'END');}
 function clearMovement(){moving=0;clearTimeout(holdTimer);pointer=null;}
 async function init(){
-  if(reduced.matches)return readVersion('reduced-motion');
-  if(navigator.connection?.saveData||navigator.deviceMemory&&navigator.deviceMemory<=2)return readVersion('low-capability');
-  const probe=document.createElement('canvas');const gl=probe.getContext('webgl2');if(!gl)return readVersion('webgl-unavailable');gl.getExtension('WEBGL_lose_context')?.loseContext();
-  const timeout=setTimeout(()=>readVersion('loading-timeout'),9000);
-  try{const module=await import('./3d/world.js');if(!alive)return;world=module.createWorld($('#world'));world.view(distance,yaw,pitch);world.draw(time);clearTimeout(timeout);
+  if(!window.v2Startup.pending)return;
+  try{const [module]=await Promise.all([import('./3d/world.js'),window.v2Startup.styles]);if(!alive||!window.v2Startup.pending)return;world=module.createWorld($('#world'));world.view(distance,yaw,pitch);world.draw(time);
     document.body.classList.add('spatial');document.body.dataset.state=state;panels.forEach(p=>p.hidden=p.id!=='arrival');$('#start').hidden=false;$('#pause').hidden=false;
-  }catch(error){clearTimeout(timeout);return readVersion('renderer-failure');}
+  }catch(error){return readVersion('renderer-failure');}
   $('#start').onclick=()=>enter('WALK_TREE');$('#action').onclick=action;
   // The tap that ends the route must not activate the newly revealed restart link.
   const restart=$('#restart-walk');let restartPressed=false;
@@ -69,5 +66,6 @@ async function init(){
   raf=requestAnimationFrame(frame);
   // Read-only diagnostics used by local QA. No telemetry, storage or fingerprinting.
   window.walkDiagnostics=()=>({state,distance,yaw,pitch,time,paused,stats:world.stats()});
+  window.v2Startup.finish();
 }
 init().catch(()=>readVersion('unexpected-failure'));
