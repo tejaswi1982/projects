@@ -12,3 +12,7 @@ body:not(.spatial) [data-action]{display:none}button,a,summary{touch-action:mani
 @keyframes v2-arrive{from{opacity:0}to{opacity:1}}
 body.spatial{background:#c7cebf}
 body.spatial #world{animation:v2-arrive 180ms ease-out both}
+.utilities>a{display:flex;align-items:center;min-height:44px;padding:8px;white-space:nowrap;text-decoration:none}
+.utilities>a.ecosystem-home{min-width:44px;justify-content:center}
+.ending .ecosystem-next{display:flex;flex-wrap:wrap;gap:0 18px;margin-top:18px}
+.ending .ecosystem-next a{margin:0;width:fit-content}
