@@ -16,3 +16,4 @@ body.spatial #world{animation:v2-arrive 180ms ease-out both}
 .utilities>a.ecosystem-home{min-width:44px;justify-content:center}
 .ending .ecosystem-next{display:flex;flex-wrap:wrap;gap:0 18px;margin-top:18px}
 .ending .ecosystem-next a{margin:0;width:fit-content}
+.navigation>.utilities{margin-left:auto}
